@@ -1,41 +1,133 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+
 import "./App.css";
-import Dashboard from "./pages/Dashboard";
+
+import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
+
 import Home from "./pages/Home";
+
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import DashboardLayout from "./components/DashboardLayout";
+import AdminDashboard from "./pages/AdminDashboard";
+import TeacherDashboard from "./pages/TeacherDashboard";
+import StudentDashboard from "./pages/StudentDashboard";
+
 import AddStudent from "./pages/AddStudent";
 import Students from "./pages/Students";
 
+import Unauthorized from "./pages/Unauthorized";
+
+
 function App() {
-  const [students, setStudents] = useState([]);
 
   return (
     <BrowserRouter>
+
       <Navbar />
 
       <Routes>
+
+        {/* PUBLIC ROUTES */}
+
         <Route
-          path="/add"
-          element={
-            <AddStudent
-              students={students}
-              setStudents={setStudents}
-            />
-          }
+          path="/"
+          element={<Home />}
         />
+
         <Route
-  path="/dashboard"
-  element={<Dashboard students={students} />}
+          path="/login"
+          element={<Login />}
+        />
+
+        <Route
+          path="/register"
+          element={<Register />}
+        />
+
+
+        {/* ADMIN DASHBOARD */}
+
+        <Route
+  path="/admin/dashboard"
+  element={
+    <ProtectedRoute allowedRoles={["admin"]}>
+      <DashboardLayout>
+        <AdminDashboard />
+      </DashboardLayout>
+    </ProtectedRoute>
+  }
 />
+
+
+        {/* TEACHER DASHBOARD */}
+
+        <Route
+  path="/teacher/dashboard"
+  element={
+    <ProtectedRoute allowedRoles={["teacher"]}>
+      <DashboardLayout>
+        <TeacherDashboard />
+      </DashboardLayout>
+    </ProtectedRoute>
+  }
+/>
+
+
+        {/* STUDENT DASHBOARD */}
+
+        <Route
+  path="/student/dashboard"
+  element={
+    <ProtectedRoute allowedRoles={["student"]}>
+      <DashboardLayout>
+        <StudentDashboard />
+      </DashboardLayout>
+    </ProtectedRoute>
+  }
+/>
+
+
+        {/* ADMIN + TEACHER */}
 
         <Route
           path="/students"
-          element={<Students students={students} />}
+          element={
+            <ProtectedRoute
+              allowedRoles={["admin", "teacher"]}
+            >
+              <Students />
+            </ProtectedRoute>
+          }
         />
 
-        <Route path="/" element={<Home />} />
+
+        {/* ADMIN ONLY */}
+
+        <Route
+          path="/add"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AddStudent />
+            </ProtectedRoute>
+          }
+        />
+
+
+        {/* UNAUTHORIZED */}
+
+        <Route
+          path="/unauthorized"
+          element={<Unauthorized />}
+        />
+
       </Routes>
+
     </BrowserRouter>
   );
 }
