@@ -206,7 +206,7 @@ function Sidebar() {
             </NavLink>
 
             <NavLink
-              to="/my-results"
+              to="/student/results"
               className="sidebar-link"
             >
               <BarChart3 size={19} />

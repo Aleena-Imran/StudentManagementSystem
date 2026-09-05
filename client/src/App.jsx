@@ -17,12 +17,13 @@ import DashboardLayout from "./components/DashboardLayout";
 import AdminDashboard from "./pages/AdminDashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import StudentDashboard from "./pages/StudentDashboard";
-
+import Results from "./pages/Results";
 import AddStudent from "./pages/AddStudent";
 import Students from "./pages/Students";
-
+import MyAttendance from "./pages/MyAttendance";
 import Unauthorized from "./pages/Unauthorized";
-
+import Exams from "./pages/Exams";
+import StudentProfile from "./pages/StudentProfile";
 
 function App() {
 
@@ -64,7 +65,6 @@ function App() {
   }
 />
 
-
         {/* TEACHER DASHBOARD */}
 
         <Route
@@ -92,6 +92,44 @@ function App() {
   }
 />
 
+<Route
+  path="/profile"
+  element={
+    <ProtectedRoute allowedRoles={["student"]}>
+      <StudentProfile />
+    </ProtectedRoute>
+  }
+/>
+
+{/* Student Results */}
+<Route
+  path="/student/results"
+  element={
+    <ProtectedRoute allowedRoles={["student"]}>
+      <Results />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/my-attendance"
+  element={
+    <ProtectedRoute allowedRoles={["student"]}>
+      <MyAttendance />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/exams"
+  element={
+    <ProtectedRoute
+      allowedRoles={["admin", "teacher", "student"]}
+    >
+      <Exams />
+    </ProtectedRoute>
+  }
+/>
 
         {/* ADMIN + TEACHER */}
 

@@ -1,3 +1,7 @@
+import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import "./Dashboard.css";
 import {
   CalendarDays,
   ClipboardCheck,
@@ -16,26 +20,102 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-
-const attendanceData = [
-  { month: "Jan", attendance: 88 },
-  { month: "Feb", attendance: 91 },
-  { month: "Mar", attendance: 86 },
-  { month: "Apr", attendance: 93 },
-  { month: "May", attendance: 90 },
-  { month: "Jun", attendance: 95 },
-];
-
-
 const StudentDashboard = () => {
+  const { token } = useAuth();
+  const navigate = useNavigate();
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/dashboard/student",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.message || "Failed to load dashboard"
+          );
+        }
+
+        setDashboardData(data);
+      } catch (error) {
+        console.error("Dashboard error:", error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (token) {
+      fetchDashboard();
+    }
+  }, [token]);
+
+  // -----------------------------
+  // LOADING
+  // -----------------------------
+
+  if (loading) {
+    return (
+      <div className="student-dashboard">
+        <h1>Loading dashboard...</h1>
+      </div>
+    );
+  }
+
+  // -----------------------------
+  // ERROR
+  // -----------------------------
+
+  if (error) {
+    return (
+      <div className="student-dashboard">
+        <h1>Unable to load dashboard</h1>
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+  if (!dashboardData) {
+    return null;
+  }
+
+  // -----------------------------
+  // SAFE DATA
+  // -----------------------------
+
+  const attendance = dashboardData.attendance ?? 0;
+
+  const averageGrade =
+    dashboardData.averageGrade ?? "N/A";
+
+  const upcomingExams =
+    dashboardData.upcomingExams ?? [];
+
+  const assignments =
+  dashboardData.assignments ?? [];
+
+  const attendanceTrend =
+    dashboardData.attendanceTrend ?? [];
 
   return (
     <div className="student-dashboard">
 
-      {/* HEADER */}
+      {/* =========================
+          HEADER
+      ========================= */}
 
       <div className="dashboard-header">
-
         <div>
           <h1>Student Dashboard</h1>
 
@@ -43,13 +123,16 @@ const StudentDashboard = () => {
             Welcome back! Here's your academic overview.
           </p>
         </div>
-
       </div>
 
 
-      {/* STAT CARDS */}
+      {/* =========================
+          STAT CARDS
+      ========================= */}
 
       <div className="dashboard-cards">
+
+        {/* Attendance */}
 
         <div className="dashboard-card">
 
@@ -61,17 +144,21 @@ const StudentDashboard = () => {
 
             <span>Attendance</span>
 
-            <h2>92%</h2>
+            <h2>{attendance}%</h2>
 
             <small>
               <ArrowUpRight size={14} />
-              Good standing
+              {attendance >= 75
+                ? "Good standing"
+                : "Needs improvement"}
             </small>
 
           </div>
 
         </div>
 
+
+        {/* Average Grade */}
 
         <div className="dashboard-card">
 
@@ -83,16 +170,18 @@ const StudentDashboard = () => {
 
             <span>Average Grade</span>
 
-            <h2>A</h2>
+            <h2>{averageGrade}</h2>
 
             <small>
-              Excellent performance
+              Academic performance
             </small>
 
           </div>
 
         </div>
 
+
+        {/* Upcoming Exams */}
 
         <div className="dashboard-card">
 
@@ -104,16 +193,18 @@ const StudentDashboard = () => {
 
             <span>Upcoming Exams</span>
 
-            <h2>3</h2>
+            <h2>{upcomingExams.length}</h2>
 
             <small>
-              Next exam in 8 days
+              Scheduled examinations
             </small>
 
           </div>
 
         </div>
 
+
+        {/* Assignments */}
 
         <div className="dashboard-card">
 
@@ -125,11 +216,14 @@ const StudentDashboard = () => {
 
             <span>Assignments</span>
 
-            <h2>5</h2>
+            <h2>{assignments.length}</h2>
 
-            <small>
-              2 pending
-            </small>
+<small>
+  {assignments.filter(
+    (assignment) => assignment.status === "Pending"
+  ).length}{" "}
+  pending
+</small>
 
           </div>
 
@@ -138,27 +232,33 @@ const StudentDashboard = () => {
       </div>
 
 
-      {/* CHART + EXAMS */}
+      {/* =========================
+          CHART + EXAMS
+      ========================= */}
 
       <div className="dashboard-grid">
 
 
-        {/* ATTENDANCE CHART */}
+        {/* =========================
+            ATTENDANCE CHART
+        ========================= */}
 
         <div className="dashboard-panel attendance-panel">
 
           <div className="panel-header">
 
             <div>
+
               <h2>Attendance Trend</h2>
 
               <p>
-                Your attendance over the last 6 months
+                Your attendance records
               </p>
+
             </div>
 
             <span className="panel-badge">
-              92% Overall
+              {attendance}% Overall
             </span>
 
           </div>
@@ -166,142 +266,143 @@ const StudentDashboard = () => {
 
           <div className="chart-container">
 
-            <ResponsiveContainer
-              width="100%"
-              height="100%"
-            >
+            {attendanceTrend.length > 0 ? (
 
-              <LineChart data={attendanceData}>
+              <ResponsiveContainer
+                width="100%"
+                height="100%"
+              >
 
-                <CartesianGrid
-                  strokeDasharray="3 3"
-                  vertical={false}
-                />
+                <LineChart
+                  data={attendanceTrend}
+                >
 
-                <XAxis
-                  dataKey="month"
-                />
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    vertical={false}
+                  />
 
-                <YAxis
-                  domain={[70, 100]}
-                />
+                  {/* IMPORTANT:
+                      Backend sends "date"
+                  */}
 
-                <Tooltip />
+                  <XAxis
+                    dataKey="date"
+                  />
 
-                <Line
-                  type="monotone"
-                  dataKey="attendance"
-                  stroke="#2563eb"
-                  strokeWidth={3}
-                  dot={{ r: 4 }}
-                />
+                  <YAxis
+                    domain={[0, 100]}
+                  />
 
-              </LineChart>
+                  <Tooltip />
 
-            </ResponsiveContainer>
+                  <Line
+                    type="monotone"
+                    dataKey="attendance"
+                    stroke="#2563eb"
+                    strokeWidth={3}
+                    dot={{ r: 4 }}
+                  />
+
+                </LineChart>
+
+              </ResponsiveContainer>
+
+            ) : (
+
+              <div className="empty-state">
+                <p>
+                  No attendance records available.
+                </p>
+              </div>
+
+            )}
 
           </div>
 
         </div>
 
 
-        {/* UPCOMING EXAMS */}
+        {/* =========================
+            UPCOMING EXAMS
+        ========================= */}
 
         <div className="dashboard-panel">
 
           <div className="panel-header">
 
             <div>
+
               <h2>Upcoming Exams</h2>
 
               <p>
                 Your upcoming examinations
               </p>
+
             </div>
 
-            <button className="view-all-btn">
-              View All
-            </button>
+            <button
+  className="view-all-btn"
+  onClick={() => navigate("/exams")}
+>
+  View All
+</button>
 
           </div>
 
 
           <div className="exam-list">
 
+            {upcomingExams.length > 0 ? (
 
-            <div className="exam-item">
+              upcomingExams.map((exam) => (
 
-              <div className="exam-icon">
-                <CalendarDays size={20} />
-              </div>
+                <div
+                  className="exam-item"
+                  key={exam._id}
+                >
 
-              <div className="exam-info">
-
-                <strong>
-                  Mathematics
-                </strong>
-
-                <span>
-                  September 12, 2026
-                </span>
-
-              </div>
-
-              <span className="exam-days">
-                8 days
-              </span>
-
-            </div>
+                  <div className="exam-icon">
+                    <CalendarDays size={20} />
+                  </div>
 
 
-            <div className="exam-item">
+                  <div className="exam-info">
 
-              <div className="exam-icon">
-                <CalendarDays size={20} />
-              </div>
+                    <strong>
+                      {exam.subject || exam.title}
+                    </strong>
 
-              <div className="exam-info">
+                    <span>
+                      {new Date(
+                        exam.examDate
+                      ).toLocaleDateString(
+                        "en-US",
+                        {
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
+                        }
+                      )}
+                    </span>
 
-                <strong>
-                  Science
-                </strong>
+                  </div>
 
-                <span>
-                  September 18, 2026
-                </span>
+                </div>
 
-              </div>
+              ))
 
-              <span className="exam-days">
-                14 days
-              </span>
+            ) : (
 
-            </div>
+              <div className="empty-state">
 
-
-            <div className="exam-item">
-
-              <div className="exam-icon">
-                <CalendarDays size={20} />
-              </div>
-
-              <div className="exam-info">
-
-                <strong>
-                  English
-                </strong>
-
-                <span>
-                  September 25, 2026
-                </span>
+                <p>
+                  No upcoming exams.
+                </p>
 
               </div>
 
-              <span className="exam-days">
-                21 days
-              </span>
-
-            </div>
+            )}
 
           </div>
 
@@ -309,93 +410,83 @@ const StudentDashboard = () => {
 
       </div>
 
+{/* =========================
+    ASSIGNMENTS
+========================= */}
 
-      {/* RECENT RESULTS */}
+<div className="dashboard-panel assignments-panel">
 
-      <div className="dashboard-panel results-panel">
+  <div className="panel-header">
 
-        <div className="panel-header">
+    <div>
+      <h2>My Assignments</h2>
 
-          <div>
+      <p>
+        Your assigned academic work
+      </p>
+    </div>
 
-            <h2>Recent Results</h2>
+  </div>
 
-            <p>
-              Your latest examination performance
-            </p>
+  <div className="assignment-list">
+
+    {assignments.length > 0 ? (
+
+      assignments.map((assignment) => (
+
+        <div
+          className="assignment-item"
+          key={assignment._id}
+        >
+
+          <div className="assignment-info">
+
+            <strong>
+              {assignment.title}
+            </strong>
+
+            <span>
+              {assignment.subject}
+            </span>
+
+            <small>
+              Due:{" "}
+              {new Date(
+                assignment.dueDate
+              ).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </small>
 
           </div>
 
-          <button className="view-all-btn">
-            View All
-          </button>
+          <span
+            className={`assignment-status ${assignment.status.toLowerCase()}`}
+          >
+            {assignment.status}
+          </span>
 
         </div>
 
+      ))
 
-        <div className="results-table">
+    ) : (
 
-          <div className="result-row result-header">
-
-            <span>Subject</span>
-            <span>Grade</span>
-            <span>Score</span>
-            <span>Status</span>
-
-          </div>
-
-
-          <div className="result-row">
-
-            <span>Mathematics</span>
-
-            <strong>A</strong>
-
-            <span>92%</span>
-
-            <span className="result-status">
-              Excellent
-            </span>
-
-          </div>
-
-
-          <div className="result-row">
-
-            <span>Science</span>
-
-            <strong>A-</strong>
-
-            <span>88%</span>
-
-            <span className="result-status">
-              Excellent
-            </span>
-
-          </div>
-
-
-          <div className="result-row">
-
-            <span>English</span>
-
-            <strong>B+</strong>
-
-            <span>84%</span>
-
-            <span className="result-status">
-              Good
-            </span>
-
-          </div>
-
-        </div>
-
+      <div className="empty-state">
+        <p>No assignments available.</p>
       </div>
+
+    )}
+
+  </div>
+
+</div>
+      
 
     </div>
   );
 };
-
 
 export default StudentDashboard;

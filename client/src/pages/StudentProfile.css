@@ -1,0 +1,145 @@
+.profile-page {
+  padding: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.profile-header {
+  margin-bottom: 25px;
+}
+
+.profile-header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.profile-header p {
+  margin-top: 6px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.profile-card {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+  border: 1px solid #e5e7eb;
+}
+
+.profile-top {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.profile-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.profile-name h2 {
+  margin: 0 0 7px;
+  font-size: 22px;
+  color: #1e293b;
+}
+
+.profile-name span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-transform: capitalize;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.profile-section {
+  padding-top: 28px;
+}
+
+.profile-section h3 {
+  margin: 0 0 20px;
+  font-size: 17px;
+  color: #1e293b;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  background: #f8fafc;
+  border-radius: 12px;
+}
+
+.profile-info-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef2ff;
+  color: #4f46e5;
+  flex-shrink: 0;
+}
+
+.profile-info div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.profile-info span {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.profile-info strong {
+  font-size: 15px;
+  color: #1e293b;
+  word-break: break-word;
+}
+
+.profile-loading,
+.profile-error {
+  text-align: center;
+  padding: 50px;
+  color: #64748b;
+}
+
+.profile-error {
+  color: #dc2626;
+}
+
+@media (max-width: 700px) {
+  .profile-page {
+    padding: 20px;
+  }
+
+  .profile-card {
+    padding: 20px;
+  }
+
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
