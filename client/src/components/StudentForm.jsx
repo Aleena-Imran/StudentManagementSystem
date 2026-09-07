@@ -1,22 +1,51 @@
 import { useState } from "react";
+import axios from "axios";
 
-function StudentForm({ students, setStudents }) {
+function StudentForm() {
   const [name, setName] = useState("");
   const [course, setCourse] = useState("");
 
-  const handleSubmit = (e) => {
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newStudent = {
-      id: Date.now(),
-      name,
-      course,
-    };
+    setMessage("");
+    setError("");
+    setLoading(true);
 
-    setStudents([...students, newStudent]);
+    try {
+      const token = localStorage.getItem("token");
 
-    setName("");
-    setCourse("");
+      const response = await axios.post(
+        "http://localhost:5000/api/students",
+        {
+          name,
+          course,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setMessage(response.data.message);
+
+      setName("");
+      setCourse("");
+    } catch (err) {
+      console.error("Add student error:", err);
+
+      setError(
+        err.response?.data?.message ||
+          "Unable to add student."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -26,6 +55,7 @@ function StudentForm({ students, setStudents }) {
         placeholder="Enter Student Name"
         value={name}
         onChange={(e) => setName(e.target.value)}
+        required
       />
 
       <br />
@@ -36,14 +66,27 @@ function StudentForm({ students, setStudents }) {
         placeholder="Enter Course"
         value={course}
         onChange={(e) => setCourse(e.target.value)}
+        required
       />
 
       <br />
       <br />
 
-      <button type="submit">
-        Add Student
+      <button type="submit" disabled={loading}>
+        {loading ? "Adding..." : "Add Student"}
       </button>
+
+      {message && (
+        <p style={{ color: "green" }}>
+          {message}
+        </p>
+      )}
+
+      {error && (
+        <p style={{ color: "red" }}>
+          {error}
+        </p>
+      )}
     </form>
   );
 }

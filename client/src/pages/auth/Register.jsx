@@ -17,6 +17,7 @@ function Register() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    course: "",
     password: "",
   });
 
@@ -119,6 +120,26 @@ function Register() {
             />
           </div>
 
+{/* Course */}
+<label>Course</label>
+
+<div className="input-wrapper">
+  <GraduationCap size={18} />
+
+  <select
+    name="course"
+    value={formData.course}
+    onChange={handleChange}
+    required
+  >
+    <option value="">Select your course</option>
+    <option value="MCA">MCA</option>
+    <option value="BCA">BCA</option>
+    <option value="B.Tech">B.Tech</option>
+    <option value="M.Tech">M.Tech</option>
+    <option value="MBA">MBA</option>
+  </select>
+</div>
           {/* Password */}
           <label>Password</label>
 

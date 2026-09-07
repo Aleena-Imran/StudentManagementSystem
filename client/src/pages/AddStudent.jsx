@@ -1,14 +1,11 @@
 import StudentForm from "../components/StudentForm";
 
-function AddStudent({ students, setStudents }) {
+function AddStudent() {
   return (
     <div className="container">
       <h1>Add Student</h1>
 
-      <StudentForm
-        students={students}
-        setStudents={setStudents}
-      />
+      <StudentForm />
     </div>
   );
 }

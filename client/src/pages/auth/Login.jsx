@@ -84,7 +84,7 @@ function Login() {
 
       if (data.user.role === "admin") {
 
-        navigate("/dashboard");
+        navigate("/admin/dashboard");
 
       } else if (data.user.role === "teacher") {
 

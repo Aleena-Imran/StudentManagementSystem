@@ -24,7 +24,10 @@ import MyAttendance from "./pages/MyAttendance";
 import Unauthorized from "./pages/Unauthorized";
 import Exams from "./pages/Exams";
 import StudentProfile from "./pages/StudentProfile";
-
+import Teachers from "./pages/Teachers";
+import AddTeacher from "./pages/AddTeacher";
+import Attendance from "./pages/Attendance";
+import EnterResults from "./pages/EnterResults";
 function App() {
 
   return (
@@ -131,6 +134,16 @@ function App() {
   }
 />
 
+
+<Route
+  path="/attendance"
+  element={
+    <ProtectedRoute allowedRoles={["teacher"]}>
+      <Attendance />
+    </ProtectedRoute>
+  }
+/>
+
         {/* ADMIN + TEACHER */}
 
         <Route
@@ -156,6 +169,51 @@ function App() {
           }
         />
 
+<Route
+  path="/add-teacher"
+  element={
+    <ProtectedRoute allowedRoles={["admin"]}>
+      <AddTeacher />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/teacher/dashboard"
+  element={
+    <ProtectedRoute allowedRoles={["teacher"]}>
+      <DashboardLayout>
+        <TeacherDashboard />
+      </DashboardLayout>
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/attendance"
+  element={
+    <ProtectedRoute allowedRoles={["teacher"]}>
+      <Attendance />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/enter-results"
+  element={
+    <ProtectedRoute allowedRoles={["teacher"]}>
+      <EnterResults />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/teachers"
+  element={
+    <ProtectedRoute allowedRoles={["admin"]}>
+      <Teachers />
+    </ProtectedRoute>
+  }
+/>
 
         {/* UNAUTHORIZED */}
 

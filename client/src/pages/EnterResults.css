@@ -1,0 +1,197 @@
+.enter-results-page {
+  min-height: 100vh;
+  padding: 30px;
+  background: #f8fafc;
+  box-sizing: border-box;
+}
+
+.enter-results-container {
+  max-width: 850px;
+  margin: 0 auto;
+}
+
+.back-results-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: transparent;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 0;
+  margin-bottom: 25px;
+}
+
+.back-results-btn:hover {
+  color: #2563eb;
+}
+
+.enter-results-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+.enter-results-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+  background: #dbeafe;
+  color: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.enter-results-header h1 {
+  margin: 0 0 5px;
+  font-size: 28px;
+  color: #0f172a;
+}
+
+.enter-results-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.enter-results-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  outline: none;
+  background: white;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.result-form-error,
+.result-form-success {
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.result-form-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+
+.result-form-success {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+}
+
+.enter-results-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 10px;
+}
+
+.cancel-result-btn,
+.save-result-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cancel-result-btn {
+  background: white;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+}
+
+.cancel-result-btn:hover {
+  background: #f8fafc;
+}
+
+.save-result-btn {
+  background: #2563eb;
+  border: none;
+  color: white;
+}
+
+.save-result-btn:hover {
+  background: #1d4ed8;
+}
+
+.save-result-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .enter-results-page {
+    padding: 20px;
+  }
+
+  .enter-results-card {
+    padding: 20px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .enter-results-header h1 {
+    font-size: 24px;
+  }
+
+  .enter-results-actions {
+    flex-direction: column-reverse;
+  }
+
+  .cancel-result-btn,
+  .save-result-btn {
+    width: 100%;
+  }
+}
