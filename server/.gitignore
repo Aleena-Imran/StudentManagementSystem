@@ -1,0 +1,5 @@
+PORT=5000
+
+MONGO_URI=mongodb+srv://Aleena:admin@studentmanagementsystem.bm4wlqv.mongodb.net/?appName=StudentManagementSystem
+
+JWT_SECRET=studentmanagementsecret

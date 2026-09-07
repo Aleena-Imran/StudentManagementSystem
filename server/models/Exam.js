@@ -2,16 +2,26 @@ import mongoose from "mongoose";
 
 const examSchema = new mongoose.Schema(
   {
-    title: String,
+    title: {
+      type: String,
+      required: true,
+    },
+
+    subject: {
+      type: String,
+      required: true,
+    },
 
     examDate: {
       type: Date,
       required: true,
     },
-
-    subject: String,
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-export default mongoose.model("Exam", examSchema);
+const Exam = mongoose.models.Exam || mongoose.model("Exam", examSchema);
+
+export default Exam;
