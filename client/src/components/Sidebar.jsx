@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, Link} from "react-router-dom";
 
 import {
   LayoutDashboard,
@@ -134,7 +134,12 @@ function Sidebar() {
               <ClipboardCheck size={19} />
               <span>Attendance</span>
             </NavLink>
-
+<NavLink to="/assignments" className="sidebar-link">
+<ClipboardCheck size={19} />
+<span>
+  Assignments
+</span>
+</NavLink>
             <NavLink
               to="/exams"
               className="sidebar-link"
@@ -173,7 +178,12 @@ function Sidebar() {
               <ClipboardCheck size={19} />
               <span>Attendance</span>
             </NavLink>
-
+            <NavLink to="/assignments" className="sidebar-link">
+<ClipboardCheck size={19} />
+<span>
+  Assignments
+</span>
+</NavLink>
             <NavLink
               to="/exams"
               className="sidebar-link"
