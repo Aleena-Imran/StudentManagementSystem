@@ -27,14 +27,14 @@ router.get(
 router.get(
   "/students",
   protect,
-  authorize("teacher"),
+  authorize("admin","teacher"),
   getStudentsForAttendance
 );
 
 router.post(
   "/",
   protect,
-  authorize("teacher"),
+  authorize("admin","teacher"),
   markAttendance
 );
 

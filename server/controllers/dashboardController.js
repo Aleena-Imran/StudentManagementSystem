@@ -285,6 +285,21 @@ export const getStudentDashboard = async (req, res) => {
     // 9. Send student dashboard data
     // ==========================================
 
+    const totalMarks = results.reduce(
+  (sum, result) => sum + Number(result.marksObtained || 0),
+  0
+);
+
+const totalMaxMarks = results.reduce(
+  (sum, result) => sum + Number(result.maxMarks || 0),
+  0
+);
+
+const averagePercentage =
+  totalMaxMarks > 0
+    ? Math.round((totalMarks / totalMaxMarks) * 100)
+    : null;
+
     res.status(200).json({
       student: {
         name: student.name,
@@ -295,7 +310,8 @@ export const getStudentDashboard = async (req, res) => {
 
       attendance: attendancePercentage,
 
-      averageGrade: student.grade || "N/A",
+      averageGrade:
+      averagePercentage !== null ? `${averagePercentage}%` : "N/A",
 
       upcomingExams,
 

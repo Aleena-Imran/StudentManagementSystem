@@ -1,49 +1,49 @@
-import mongoose from "mongoose";
+import express from "express";
 
-const assignmentSchema = new mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+import {
+  getAssignments,
+  createAssignment,
+  updateAssignment,
+  deleteAssignment,
+} from "../controllers/assignmentController.js";
 
-    subject: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+import {
+  protect,
+  authorize,
+} from "../middleware/authMiddleware.js";
 
-    description: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+const router = express.Router();
 
-    dueDate: {
-      type: Date,
-      required: true,
-    },
-
-    course: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-  },
-  {
-    timestamps: true,
-  }
+// Get assignments
+router.get(
+  "/",
+  protect,
+  authorize("admin", "teacher", "student"),
+  getAssignments
 );
 
-const Assignment =
-  mongoose.models.Assignment ||
-  mongoose.model("Assignment", assignmentSchema);
+// Create assignment
+router.post(
+  "/",
+  protect,
+  authorize("admin", "teacher"),
+  createAssignment
+);
 
-export default Assignment;
+// Update assignment
+router.put(
+  "/:id",
+  protect,
+  authorize("admin", "teacher"),
+  updateAssignment
+);
+
+// Delete assignment
+router.delete(
+  "/:id",
+  protect,
+  authorize("admin", "teacher"),
+  deleteAssignment
+);
+
+export default router;

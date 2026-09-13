@@ -16,7 +16,8 @@ const assignmentSchema = new mongoose.Schema(
 
     description: {
       type: String,
-      default: "",
+      required: true,
+      trim: true,
     },
 
     dueDate: {
@@ -24,15 +25,15 @@ const assignmentSchema = new mongoose.Schema(
       required: true,
     },
 
-    status: {
+    course: {
       type: String,
-      enum: ["Pending", "Submitted", "Completed"],
-      default: "Pending",
+      required: true,
+      trim: true,
     },
 
-    studentId: {
+    createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Student",
+      ref: "User",
       required: true,
     },
   },
