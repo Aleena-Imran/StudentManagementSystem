@@ -1,14 +1,27 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { FaPlus, FaEdit, FaTrash, FaBookOpen } from "react-icons/fa";
+import {
+  FaPlus,
+  FaEdit,
+  FaTrash,
+  FaBookOpen,
+} from "react-icons/fa";
 import "./Assignments.css";
+
 function Assignments() {
-  const { token, user } = useAuth();
+  const { user } = useAuth();
+
+  // ==========================================
+  // STATES
+  // ==========================================
 
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  const [editingId, setEditingId] = useState(null);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -18,105 +31,169 @@ function Assignments() {
     course: "",
   });
 
-  const [editingId, setEditingId] = useState(null);
+  // ==========================================
+  // HANDLE INPUT CHANGES
+  // ==========================================
 
-  // Fetch assignments
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    // Clear old messages when user starts typing
+    setError("");
+    setMessage("");
+  };
+
+  // ==========================================
+  // FETCH ASSIGNMENTS
+  // ==========================================
+
   const fetchAssignments = async () => {
-  try {
+    try {
+      setLoading(true);
+      setError("");
+
+      const savedToken = localStorage.getItem("token");
+
+      if (!savedToken) {
+        setError("You are not logged in. Please login again.");
+        return;
+      }
+
+      const response = await fetch(
+        "http://localhost:5000/api/assignments",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${savedToken}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      console.log("Assignments response:", data);
+
+      if (!response.ok) {
+        throw new Error(
+          data.message || "Failed to fetch assignments"
+        );
+      }
+
+      setAssignments(
+        Array.isArray(data) ? data : []
+      );
+    } catch (err) {
+      console.error(
+        "Fetch assignments error:",
+        err
+      );
+
+      setError(
+        err.message || "Failed to fetch assignments"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ==========================================
+  // LOAD ASSIGNMENTS WHEN PAGE OPENS
+  // ==========================================
+
+  useEffect(() => {
+    fetchAssignments();
+  }, []);
+
+  // ==========================================
+  // CREATE / UPDATE ASSIGNMENT
+  // ==========================================
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setError("");
+    setMessage("");
+
     const savedToken = localStorage.getItem("token");
 
     if (!savedToken) {
-      setError("You are not logged in. Please login again.");
+      setError(
+        "You are not logged in. Please login again."
+      );
       return;
     }
 
-    const response = await fetch(
-      "http://localhost:5000/api/assignments",
-      {
+    try {
+      const url = editingId
+        ? `http://localhost:5000/api/assignments/${editingId}`
+        : "http://localhost:5000/api/assignments";
+
+      const method = editingId ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${savedToken}`,
         },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      console.log("Create/Update response:", data);
+
+      if (!response.ok) {
+        throw new Error(
+          data.message ||
+            (editingId
+              ? "Failed to update assignment"
+              : "Failed to create assignment")
+        );
       }
-    );
 
-    const data = await response.json();
+      // Success message
+      setMessage(
+        editingId
+          ? "Assignment updated successfully!"
+          : "Assignment created successfully!"
+      );
 
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to fetch assignments");
+      // Reset form
+      setFormData({
+        title: "",
+        subject: "",
+        description: "",
+        dueDate: "",
+        course: "",
+      });
+
+      setEditingId(null);
+
+      // Refresh assignments
+      await fetchAssignments();
+    } catch (err) {
+      console.error(
+        "Assignment submit error:",
+        err
+      );
+
+      setError(
+        err.message ||
+          "Failed to create assignment"
+      );
     }
-
-    setAssignments(Array.isArray(data) ? data : []);
-  } catch (error) {
-    console.error("Fetch assignments error:", error);
-    setError(error.message);
-  }
-};
-  // Handle input
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
   };
 
-  // Create / Update
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  // ==========================================
+  // EDIT ASSIGNMENT
+  // ==========================================
 
-  const savedToken = localStorage.getItem("token");
-
-  if (!savedToken) {
-    setError("You are not logged in. Please login again.");
-    return;
-  }
-
-  try {
-    const url = editingId
-      ? `http://localhost:5000/api/assignments/${editingId}`
-      : "http://localhost:5000/api/assignments";
-
-    const method = editingId ? "PUT" : "POST";
-
-    const response = await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${savedToken}`,
-      },
-      body: JSON.stringify(formData),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to create assignment");
-    }
-
-    alert(
-      editingId
-        ? "Assignment updated successfully!"
-        : "Assignment created successfully!"
-    );
-
-    setFormData({
-      title: "",
-      subject: "",
-      description: "",
-      dueDate: "",
-      course: "",
-    });
-
-    setEditingId(null);
-    setError("");
-
-    fetchAssignments();
-  } catch (error) {
-    console.error("Assignment error:", error);
-    setError(error.message);
-  }
-};
-
-  // Edit
   const handleEdit = (assignment) => {
     setEditingId(assignment._id);
 
@@ -125,10 +202,15 @@ function Assignments() {
       subject: assignment.subject || "",
       description: assignment.description || "",
       dueDate: assignment.dueDate
-        ? new Date(assignment.dueDate).toISOString().split("T")[0]
+        ? new Date(assignment.dueDate)
+            .toISOString()
+            .split("T")[0]
         : "",
       course: assignment.course || "",
     });
+
+    setError("");
+    setMessage("");
 
     window.scrollTo({
       top: 0,
@@ -136,40 +218,75 @@ function Assignments() {
     });
   };
 
-  // Delete
+  // ==========================================
+  // DELETE ASSIGNMENT
+  // ==========================================
+
   const handleDelete = async (id) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this assignment?"
     );
 
-    if (!confirmed) return;
+    if (!confirmed) {
+      return;
+    }
 
     try {
+      setError("");
+      setMessage("");
+
+      const savedToken = localStorage.getItem("token");
+
+      if (!savedToken) {
+        setError(
+          "You are not logged in. Please login again."
+        );
+        return;
+      }
+
       const response = await fetch(
         `http://localhost:5000/api/assignments/${id}`,
         {
           method: "DELETE",
           headers: {
-  Authorization: `Bearer ${localStorage.getItem("token")}`,
-},
+            Authorization: `Bearer ${savedToken}`,
+          },
         }
       );
 
       const data = await response.json();
 
+      console.log("Delete response:", data);
+
       if (!response.ok) {
-        throw new Error(data.message || "Failed to delete assignment");
+        throw new Error(
+          data.message ||
+            "Failed to delete assignment"
+        );
       }
 
-      setMessage("Assignment deleted successfully!");
+      setMessage(
+        "Assignment deleted successfully!"
+      );
 
-      fetchAssignments();
+      await fetchAssignments();
     } catch (err) {
-      setError(err.message);
+      console.error(
+        "Delete assignment error:",
+        err
+      );
+
+      setError(
+        err.message ||
+          "Failed to delete assignment"
+      );
     }
   };
 
-  // Cancel editing
+  // ==========================================
+  // CANCEL EDITING
+  // ==========================================
+
   const handleCancel = () => {
     setEditingId(null);
 
@@ -180,30 +297,54 @@ function Assignments() {
       dueDate: "",
       course: "",
     });
+
+    setError("");
+    setMessage("");
   };
+
+  // ==========================================
+  // RENDER
+  // ==========================================
 
   return (
     <div className="assignments-page">
 
-      {/* Header */}
+      {/* ======================================
+          HEADER
+      ====================================== */}
+
       <div className="assignments-header">
-  <div>
-    <h1>Assignment Management</h1>
-    <p>Create and manage assignments for students</p>
-  </div>
+        <div>
+          <h1>Assignment Management</h1>
 
-  <div className="assignment-count">
-    <FaBookOpen />
-    <span>{assignments.length} Assignments</span>
-  </div>
-</div>
+          <p>
+            Create and manage assignments for
+            students
+          </p>
+        </div>
 
-      {/* Messages */}
+        <div className="assignment-count">
+          <FaBookOpen />
+
+          <span>
+            {assignments.length} Assignments
+          </span>
+        </div>
+      </div>
+
+      {/* ======================================
+          SUCCESS MESSAGE
+      ====================================== */}
+
       {message && (
         <div className="mb-5 bg-green-100 text-green-700 px-4 py-3 rounded-lg">
           {message}
         </div>
       )}
+
+      {/* ======================================
+          ERROR MESSAGE
+      ====================================== */}
 
       {error && (
         <div className="mb-5 bg-red-100 text-red-700 px-4 py-3 rounded-lg">
@@ -211,34 +352,48 @@ function Assignments() {
         </div>
       )}
 
-      {/* Create Assignment Form */}
-      {(user?.role === "admin" || user?.role === "teacher") && (
+      {/* ======================================
+          CREATE / EDIT FORM
+      ====================================== */}
+
+      {(user?.role === "admin" ||
+        user?.role === "teacher") && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
 
-          <div className="flex items-center gap-3 mb-6">
-            <div className="bg-blue-100 text-blue-600 p-3 rounded-lg">
-              {editingId ? <FaEdit /> : <FaPlus />}
-            </div>
+          {/* Form Header */}
 
-            <div>
-              <h2 className="text-xl font-semibold text-gray-800">
-                {editingId ? "Edit Assignment" : "Create Assignment"}
-              </h2>
+          <div className="assignment-form-header">
 
-              <p className="text-sm text-gray-500">
-                {editingId
-                  ? "Update assignment details"
-                  : "Add a new assignment for students"}
-              </p>
-            </div>
-          </div>
+        <div className="assignment-form-title-row">
+          {editingId ? <FaEdit /> : <FaPlus />}
+
+    <h2>
+      {editingId
+        ? "Edit Assignment"
+        : "Create Assignment"}
+    </h2>
+  </div>
+
+  <p>
+    {editingId
+      ? "Update assignment details"
+      : "Add a new assignment for students"}
+  </p>
+
+</div>
+
+          {/* Form */}
 
           <form onSubmit={handleSubmit}>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-              {/* Title */}
-              <div>
+              {/* =================================
+                  TITLE
+              ================================= */}
+
+              <div className="assignment-field">
+
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Assignment Title
                 </label>
@@ -252,10 +407,15 @@ function Assignments() {
                   required
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
                 />
+
               </div>
 
-              {/* Subject */}
-              <div>
+              {/* =================================
+                  SUBJECT
+              ================================= */}
+
+              <div className="assignment-field">
+
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Subject
                 </label>
@@ -269,10 +429,15 @@ function Assignments() {
                   required
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
                 />
+
               </div>
 
-              {/* Course */}
-              <div>
+              {/* =================================
+                  COURSE
+              ================================= */}
+
+              <div className="assignment-field">
+
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Course
                 </label>
@@ -288,12 +453,18 @@ function Assignments() {
                 />
 
                 <p className="text-xs text-gray-500 mt-1">
-                  Enter the same course as the student's profile.
+                  Enter the same course as the
+                  student's profile.
                 </p>
+
               </div>
 
-              {/* Due Date */}
-              <div>
+              {/* =================================
+                  DUE DATE
+              ================================= */}
+
+              <div className="assignment-field">
+
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Due Date
                 </label>
@@ -306,10 +477,15 @@ function Assignments() {
                   required
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
                 />
+
               </div>
 
-              {/* Description */}
-              <div className="md:col-span-2">
+              {/* =================================
+                  DESCRIPTION
+              ================================= */}
+
+              <div className="assignment-field md:col-span-2">
+
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Description
                 </label>
@@ -319,21 +495,28 @@ function Assignments() {
                   value={formData.description}
                   onChange={handleChange}
                   placeholder="Enter assignment instructions..."
-                  rows="4"
+                  rows="5"
                   required
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                 />
+
               </div>
+
             </div>
 
-            {/* Buttons */}
+            {/* =================================
+                BUTTONS
+            ================================= */}
+
             <div className="flex gap-3 mt-6">
 
               <button
                 type="submit"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition"
               >
-                {editingId ? "Update Assignment" : "Create Assignment"}
+                {editingId
+                  ? "Update Assignment"
+                  : "Create Assignment"}
               </button>
 
               {editingId && (
@@ -347,49 +530,68 @@ function Assignments() {
               )}
 
             </div>
+
           </form>
+
         </div>
       )}
 
-      {/* Assignment List */}
+      {/* ======================================
+          ASSIGNMENT LIST
+      ====================================== */}
+
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
 
         <h2 className="text-xl font-semibold text-gray-800 mb-6">
           All Assignments
         </h2>
 
+        {/* LOADING */}
+
         {loading ? (
           <div className="text-center py-10 text-gray-500">
             Loading assignments...
           </div>
+
         ) : assignments.length === 0 ? (
+
+          /* NO ASSIGNMENTS */
+
           <div className="text-center py-10">
+
             <FaBookOpen className="mx-auto text-4xl text-gray-300 mb-3" />
 
             <p className="text-gray-500">
               No assignments created yet.
             </p>
+
           </div>
+
         ) : (
+
+          /* ASSIGNMENTS */
+
           <div className="space-y-4">
 
             {assignments.map((assignment) => {
 
               const overdue =
                 assignment.dueDate &&
-                new Date(assignment.dueDate) < new Date();
+                new Date(assignment.dueDate) <
+                  new Date();
 
               return (
                 <div
-                  key={assignment._id}
-                  className="border border-gray-200 rounded-xl p-5 hover:shadow-sm transition"
-                >
+  key={assignment._id}
+  className="assignment-card"
+>
 
-                  <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+  <div className="assignment-card-content">
 
-                    <div className="flex-1">
+    <div className="assignment-details">
 
                       <div className="flex items-center gap-3 mb-2">
+
                         <h3 className="text-lg font-semibold text-gray-800">
                           {assignment.title}
                         </h3>
@@ -397,6 +599,7 @@ function Assignments() {
                         <span className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full">
                           {assignment.course}
                         </span>
+
                       </div>
 
                       <p className="text-sm font-medium text-blue-600 mb-2">
@@ -408,6 +611,7 @@ function Assignments() {
                       </p>
 
                       <div className="text-sm">
+
                         <span className="text-gray-500">
                           Due Date:{" "}
                         </span>
@@ -419,45 +623,63 @@ function Assignments() {
                               : "text-gray-700 font-medium"
                           }
                         >
-                          {new Date(
-                            assignment.dueDate
-                          ).toLocaleDateString()}
+                          {assignment.dueDate
+                            ? new Date(
+                                assignment.dueDate
+                              ).toLocaleDateString()
+                            : "Not specified"}
                         </span>
+
                       </div>
+
                     </div>
 
-                    {/* Admin / Teacher Actions */}
+                    {/* =================================
+                        ADMIN / TEACHER ACTIONS
+                    ================================= */}
+
                     {(user?.role === "admin" ||
-                      user?.role === "teacher") && (
-                      <div className="flex gap-2">
+  user?.role === "teacher") && (
 
-                        <button
-                          onClick={() => handleEdit(assignment)}
-                          className="p-3 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg"
-                          title="Edit"
-                        >
-                          <FaEdit />
-                        </button>
+  <div className="assignment-actions">
 
-                        <button
-                          onClick={() =>
-                            handleDelete(assignment._id)
-                          }
-                          className="p-3 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg"
-                          title="Delete"
-                        >
-                          <FaTrash />
-                        </button>
+    <button
+      type="button"
+      onClick={() =>
+        handleEdit(assignment)
+      }
+      className="edit-assignment-btn"
+      title="Edit Assignment"
+    >
+      <FaEdit />
+    </button>
 
-                      </div>
-                    )}
+    <button
+      type="button"
+      onClick={() =>
+        handleDelete(assignment._id)
+      }
+      className="delete-assignment-btn"
+      title="Delete Assignment"
+    >
+      <FaTrash />
+    </button>
+
+  </div>
+
+)}
+
                   </div>
+
                 </div>
               );
             })}
+
           </div>
         )}
+
       </div>
+
     </div>
   );
 }

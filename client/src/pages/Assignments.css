@@ -1,432 +1,845 @@
-/* ================================
-   ASSIGNMENT MANAGEMENT
-================================ */
+/* =========================================================
+   ASSIGNMENT MANAGEMENT PAGE
+========================================================= */
 
 .assignments-page {
-  padding: 32px;
   min-height: 100vh;
+  padding: 32px;
   background: #f8fafc;
+  box-sizing: border-box;
+  color: #111827;
 }
 
-/* Header */
+/* =========================================================
+   HEADER
+========================================================= */
 
 .assignments-header {
+  width: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 28px;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.assignments-header > div:first-child {
+  flex: 1;
 }
 
 .assignments-header h1 {
   margin: 0;
   font-size: 32px;
+  line-height: 1.2;
   font-weight: 700;
   color: #111827;
+  letter-spacing: -0.5px;
 }
 
 .assignments-header p {
-  margin-top: 8px;
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
   color: #64748b;
-  font-size: 16px;
 }
 
-/* Assignment count */
+/* Assignment counter */
 
 .assignment-count {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: #eff6ff;
-  color: #2563eb;
-  padding: 12px 18px;
-  border-radius: 12px;
-  font-weight: 600;
-}
-
-/* Messages */
-
-.assignment-message {
-  padding: 14px 18px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  font-size: 14px;
-}
-
-.assignment-success {
-  background: #ecfdf5;
-  color: #047857;
-  border: 1px solid #a7f3d0;
-}
-
-.assignment-error {
-  background: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
-}
-
-/* ================================
-   CREATE / EDIT CARD
-================================ */
-
-.assignment-form-card {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 18px;
-  padding: 28px;
-  margin-bottom: 28px;
-  box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
-}
-
-.assignment-form-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 24px;
-}
-
-.assignment-form-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: #eff6ff;
-  color: #2563eb;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  font-size: 20px;
+  gap: 9px;
+
+  padding: 12px 18px;
+
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: 600;
+
+  white-space: nowrap;
 }
 
-.assignment-form-header h2 {
-  margin: 0;
-  font-size: 20px;
-  color: #111827;
+.assignment-count svg {
+  font-size: 16px;
 }
 
-.assignment-form-header p {
-  margin: 4px 0 0;
-  color: #64748b;
+
+/* =========================================================
+   SUCCESS / ERROR MESSAGES
+========================================================= */
+
+.assignments-page .bg-green-100 {
+  padding: 13px 16px;
+  margin-bottom: 20px;
+
+  background: #ecfdf5 !important;
+  border: 1px solid #a7f3d0;
+
+  border-radius: 10px;
+
+  color: #047857 !important;
   font-size: 14px;
 }
 
-/* Form */
+.assignments-page .bg-red-100 {
+  padding: 13px 16px;
+  margin-bottom: 20px;
 
-.assignment-form {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  background: #fef2f2 !important;
+  border: 1px solid #fecaca;
+
+  border-radius: 10px;
+
+  color: #dc2626 !important;
+  font-size: 14px;
 }
 
-.assignment-field {
+
+/* =========================================================
+   CREATE / EDIT CARD
+========================================================= */
+
+.assignments-page > div:not(.assignments-header) {
+  box-sizing: border-box;
+}
+
+/* Form card */
+
+.assignments-page form {
+  width: 100%;
+}
+
+/* The white form container */
+
+.assignments-page form,
+.assignments-page form + * {
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   FORM HEADER
+========================================================= */
+
+/*
+   Targets the form card's first flex header.
+*/
+
+.assignments-page form
+  ~ * {
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   FORM INPUT AREA
+========================================================= */
+
+.assignments-page form .grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 22px !important;
+  width: 100%;
+}
+
+/* Each field */
+
+.assignments-page form .grid > div {
+  min-width: 0;
   display: flex;
   flex-direction: column;
 }
 
-.assignment-field.full-width {
-  grid-column: 1 / -1;
-}
+/* Labels */
 
-.assignment-field label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #374151;
+.assignments-page form label {
+  display: block;
   margin-bottom: 8px;
+
+  color: #374151 !important;
+
+  font-size: 14px !important;
+  line-height: 1.4;
+  font-weight: 600 !important;
 }
 
-.assignment-field input,
-.assignment-field textarea {
-  width: 100%;
-  box-sizing: border-box;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-  padding: 12px 14px;
-  font-size: 14px;
-  color: #1f2937;
-  background: #ffffff;
-  outline: none;
-  transition: 0.2s ease;
-}
+/* Inputs */
 
-.assignment-field input {
+.assignments-page form input {
+  width: 100% !important;
   height: 46px;
-}
 
-.assignment-field textarea {
-  min-height: 110px;
-  resize: vertical;
-}
+  box-sizing: border-box;
 
-.assignment-field input:focus,
-.assignment-field textarea:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
+  padding: 0 14px;
 
-.assignment-field input::placeholder,
-.assignment-field textarea::placeholder {
-  color: #9ca3af;
-}
-
-.assignment-hint {
-  margin-top: 6px;
-  font-size: 12px;
-  color: #64748b;
-}
-
-/* Buttons */
-
-.assignment-form-actions {
-  grid-column: 1 / -1;
-  display: flex;
-  gap: 12px;
-  margin-top: 4px;
-}
-
-.assignment-submit-btn,
-.assignment-cancel-btn {
-  border: none;
+  border: 1px solid #d1d5db !important;
   border-radius: 10px;
-  padding: 12px 22px;
-  font-size: 14px;
-  font-weight: 600;
+
+  background: #ffffff !important;
+
+  color: #1f2937 !important;
+
+  font-size: 14px !important;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* Textarea */
+
+.assignments-page form textarea {
+  width: 100% !important;
+  min-height: 120px;
+
+  box-sizing: border-box;
+
+  padding: 13px 14px;
+
+  border: 1px solid #d1d5db !important;
+  border-radius: 10px;
+
+  background: #ffffff !important;
+
+  color: #1f2937 !important;
+
+  font-family: inherit;
+  font-size: 14px !important;
+  line-height: 1.5;
+
+  outline: none;
+
+  resize: vertical;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* Placeholder */
+
+.assignments-page form input::placeholder,
+.assignments-page form textarea::placeholder {
+  color: #9ca3af !important;
+  opacity: 1;
+}
+
+/* Focus */
+
+.assignments-page form input:focus,
+.assignments-page form textarea:focus {
+  border-color: #2563eb !important;
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.1);
+
+  outline: none;
+}
+
+/* Course helper text */
+
+.assignments-page form .text-xs {
+  margin-top: 6px;
+
+  color: #64748b !important;
+
+  font-size: 12px !important;
+  line-height: 1.4;
+}
+
+
+/* =========================================================
+   DESCRIPTION - FULL WIDTH
+========================================================= */
+
+.assignments-page form .md\:col-span-2 {
+  grid-column: 1 / -1 !important;
+}
+
+
+/* =========================================================
+   FORM BUTTONS
+========================================================= */
+
+.assignments-page form .flex.gap-3 {
+  display: flex !important;
+  align-items: center;
+  gap: 12px !important;
+
+  margin-top: 24px !important;
+}
+
+/* Create / Update button */
+
+.assignments-page form button[type="submit"] {
+  min-height: 44px;
+
+  padding: 11px 22px !important;
+
+  border: none !important;
+  border-radius: 9px !important;
+
+  background: #2563eb !important;
+  color: #ffffff !important;
+
+  font-size: 14px !important;
+  font-weight: 600 !important;
+
   cursor: pointer;
-  transition: 0.2s ease;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.assignment-submit-btn {
-  background: #2563eb;
-  color: white;
+.assignments-page form button[type="submit"]:hover {
+  background: #1d4ed8 !important;
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 4px 10px rgba(37, 99, 235, 0.2);
 }
 
-.assignment-submit-btn:hover {
-  background: #1d4ed8;
+/* Cancel */
+
+.assignments-page form button[type="button"] {
+  min-height: 44px;
+
+  padding: 11px 22px !important;
+
+  border: none !important;
+  border-radius: 9px !important;
+
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+
+  font-size: 14px !important;
+  font-weight: 600 !important;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
+}
+
+.assignments-page form button[type="button"]:hover {
+  background: #e2e8f0 !important;
+}
+
+
+/* =========================================================
+   ALL ASSIGNMENTS SECTION
+========================================================= */
+
+/*
+   The last white card on the page.
+*/
+
+.assignments-page > .bg-white:last-child {
+  width: 100%;
+
+  background: #ffffff !important;
+
+  border: 1px solid #e5e7eb !important;
+  border-radius: 16px !important;
+
+  padding: 26px !important;
+
+  box-shadow:
+    0 4px 15px rgba(15, 23, 42, 0.05) !important;
+
+  box-sizing: border-box;
+}
+
+/* All Assignments heading */
+
+.assignments-page > .bg-white:last-child > h2 {
+  margin: 0 0 20px !important;
+
+  color: #111827 !important;
+
+  font-size: 21px !important;
+  line-height: 1.3;
+
+  font-weight: 700 !important;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.assignments-page .text-center.py-10 {
+  padding: 45px 20px !important;
+
+  color: #64748b !important;
+
+  font-size: 14px !important;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.assignments-page .text-center.py-10 svg {
+  display: block;
+
+  margin: 0 auto 12px;
+
+  color: #cbd5e1 !important;
+
+  font-size: 42px;
+}
+
+.assignments-page .text-center.py-10 p {
+  margin: 0;
+
+  color: #64748b !important;
+
+  font-size: 14px !important;
+}
+
+
+/* =========================================================
+   ASSIGNMENT LIST
+========================================================= */
+
+.assignments-page .space-y-4 {
+  display: flex;
+  flex-direction: column;
+  gap: 14px !important;
+}
+
+
+/* Individual assignment card */
+
+.assignments-page .space-y-4 > div {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 20px !important;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb !important;
+  border-radius: 13px !important;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.assignments-page .space-y-4 > div:hover {
+  border-color: #bfdbfe !important;
+
+  box-shadow:
+    0 5px 16px rgba(37, 99, 235, 0.08);
+
   transform: translateY(-1px);
 }
 
-.assignment-cancel-btn {
-  background: #f1f5f9;
-  color: #475569;
-}
 
-.assignment-cancel-btn:hover {
-  background: #e2e8f0;
-}
+/* =========================================================
+   ASSIGNMENT TITLE
+========================================================= */
 
-/* ================================
-   ASSIGNMENT LIST
-================================ */
-
-.assignment-list-card {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 18px;
-  padding: 28px;
-  box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
-}
-
-.assignment-list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 22px;
-}
-
-.assignment-list-header h2 {
+.assignments-page .space-y-4 h3 {
   margin: 0;
-  font-size: 20px;
-  color: #111827;
+
+  color: #111827 !important;
+
+  font-size: 18px !important;
+  line-height: 1.35;
+
+  font-weight: 700 !important;
 }
 
-/* Individual assignment */
 
-.assignment-item {
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 20px;
-  margin-bottom: 14px;
-  transition: 0.2s ease;
-}
+/* Course badge */
 
-.assignment-item:last-child {
-  margin-bottom: 0;
-}
-
-.assignment-item:hover {
-  border-color: #bfdbfe;
-  box-shadow: 0 5px 15px rgba(37, 99, 235, 0.08);
-}
-
-.assignment-item-content {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.assignment-main {
-  flex: 1;
-}
-
-.assignment-title-row {
-  display: flex;
+.assignments-page .space-y-4 h3 + span {
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
+
+  padding: 5px 10px !important;
+
+  background: #eff6ff !important;
+
+  border-radius: 20px !important;
+
+  color: #2563eb !important;
+
+  font-size: 11px !important;
+  font-weight: 600 !important;
+
+  white-space: nowrap;
 }
 
-.assignment-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 650;
-  color: #111827;
+
+/* Subject */
+
+.assignments-page .space-y-4 .text-blue-600 {
+  color: #2563eb !important;
+
+  font-size: 14px !important;
+  font-weight: 600 !important;
 }
 
-.assignment-course {
-  background: #eff6ff;
-  color: #2563eb;
-  padding: 5px 10px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-}
 
-.assignment-subject {
-  color: #2563eb;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
+/* Description */
 
-.assignment-description {
-  color: #64748b;
-  font-size: 14px;
+.assignments-page .space-y-4 .text-gray-600 {
+  color: #64748b !important;
+
+  font-size: 14px !important;
   line-height: 1.6;
-  margin-bottom: 14px;
 }
 
-.assignment-due-date {
-  font-size: 13px;
-  color: #64748b;
+
+/* Due date */
+
+.assignments-page .space-y-4 .text-sm {
+  font-size: 13px !important;
 }
 
-.assignment-due-date strong {
-  color: #334155;
+.assignments-page .space-y-4 .text-gray-500 {
+  color: #64748b !important;
 }
 
-.assignment-overdue {
-  color: #dc2626 !important;
+.assignments-page .space-y-4 .text-gray-700 {
+  color: #334155 !important;
 }
 
-/* Actions */
 
-.assignment-actions {
-  display: flex;
-  gap: 8px;
-}
+/* =========================================================
+   EDIT / DELETE BUTTONS
+========================================================= */
 
-.assignment-action-btn {
+.assignments-page .space-y-4 button {
   width: 40px;
   height: 40px;
-  border: none;
-  border-radius: 9px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  padding: 0 !important;
+
+  border: none !important;
+  border-radius: 9px !important;
+
   cursor: pointer;
-  transition: 0.2s ease;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
 }
 
-.assignment-edit-btn {
-  background: #eff6ff;
-  color: #2563eb;
+/* Edit */
+
+.assignments-page .space-y-4 button:first-child {
+  background: #eff6ff !important;
+  color: #2563eb !important;
 }
 
-.assignment-edit-btn:hover {
-  background: #dbeafe;
+.assignments-page .space-y-4 button:first-child:hover {
+  background: #dbeafe !important;
+  transform: translateY(-1px);
 }
 
-.assignment-delete-btn {
-  background: #fef2f2;
-  color: #dc2626;
+/* Delete */
+
+.assignments-page .space-y-4 button:last-child {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
 }
 
-.assignment-delete-btn:hover {
-  background: #fee2e2;
-}
-
-/* Empty state */
-
-.assignment-empty {
-  text-align: center;
-  padding: 50px 20px;
-}
-
-.assignment-empty-icon {
-  font-size: 45px;
-  color: #cbd5e1;
-  margin-bottom: 14px;
-}
-
-.assignment-empty p {
-  margin: 0;
-  color: #64748b;
-}
-
-/* Loading */
-
-.assignment-loading {
-  text-align: center;
-  padding: 45px;
-  color: #64748b;
+.assignments-page .space-y-4 button:last-child:hover {
+  background: #fee2e2 !important;
+  transform: translateY(-1px);
 }
 
 
-/* ================================
+/* =========================================================
    RESPONSIVE
-================================ */
+========================================================= */
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+
   .assignments-page {
-    padding: 20px;
+    padding: 24px;
+  }
+
+  .assignments-header h1 {
+    font-size: 28px;
+  }
+
+  .assignments-page form .grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .assignments-page form .md\:col-span-2 {
+    grid-column: auto !important;
+  }
+}
+
+
+@media (max-width: 650px) {
+
+  .assignments-page {
+    padding: 18px;
   }
 
   .assignments-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 15px;
+    margin-bottom: 24px;
   }
 
-  .assignment-form {
-    grid-template-columns: 1fr;
+  .assignment-count {
+    align-self: flex-start;
   }
 
-  .assignment-field.full-width {
-    grid-column: auto;
+  .assignments-header h1 {
+    font-size: 25px;
   }
 
-  .assignment-form-actions {
-    grid-column: auto;
+  .assignments-page > .bg-white:last-child {
+    padding: 20px !important;
   }
 
-  .assignment-item-content {
+  .assignments-page .space-y-4 > div {
+    padding: 16px !important;
+  }
+
+  .assignments-page .space-y-4 > div > div {
+    flex-direction: column;
+  }
+}
+
+
+@media (max-width: 450px) {
+
+  .assignments-page {
+    padding: 14px;
+  }
+
+  .assignments-header h1 {
+    font-size: 23px;
+  }
+
+  .assignments-page form .flex.gap-3 {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .assignments-page form button[type="submit"],
+  .assignments-page form button[type="button"] {
+    width: 100%;
+  }
+}
+/* =========================================================
+   CREATE ASSIGNMENT HEADER
+========================================================= */
+
+.assignment-form-header {
+  margin-bottom: 24px;
+}
+
+.assignment-form-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.assignment-form-title-row svg {
+  color: #2563eb;
+  font-size: 18px;
+}
+
+.assignment-form-title-row h2 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.assignment-form-header > p {
+  margin: 5px 0 0 28px;
+
+  color: #64748b;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   ASSIGNMENT CARD
+========================================================= */
+
+.assignment-card {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 20px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 13px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.assignment-card:hover {
+  border-color: #bfdbfe;
+
+  box-shadow:
+    0 5px 16px rgba(37, 99, 235, 0.08);
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   ASSIGNMENT CONTENT + ACTIONS
+========================================================= */
+
+.assignment-card-content {
+  display: flex;
+
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 24px;
+
+  width: 100%;
+}
+
+.assignment-details {
+  flex: 1;
+  min-width: 0;
+}
+
+
+/* =========================================================
+   ASSIGNMENT ACTIONS - RIGHT SIDE
+========================================================= */
+
+.assignment-actions {
+  display: flex;
+
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 8px;
+
+  flex-shrink: 0;
+
+  margin-left: auto;
+}
+
+
+/* Edit button */
+
+.edit-assignment-btn,
+.delete-assignment-btn {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 9px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+
+/* Edit */
+
+.edit-assignment-btn {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.edit-assignment-btn:hover {
+  background: #dbeafe;
+
+  transform: translateY(-1px);
+}
+
+
+/* Delete */
+
+.delete-assignment-btn {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.delete-assignment-btn:hover {
+  background: #fee2e2;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   ASSIGNMENT TITLE
+========================================================= */
+
+.assignment-details h3 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 650px) {
+
+  .assignment-card-content {
     flex-direction: column;
   }
 
   .assignment-actions {
-    align-self: flex-start;
-  }
-}
+    width: 100%;
 
-@media (max-width: 480px) {
-  .assignments-page {
-    padding: 15px;
+    justify-content: flex-end;
+
+    margin-left: 0;
   }
 
-  .assignment-form-card,
-  .assignment-list-card {
-    padding: 20px;
-  }
-
-  .assignment-title-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 }
