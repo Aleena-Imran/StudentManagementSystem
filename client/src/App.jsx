@@ -13,6 +13,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import StudentDashboard from "./pages/StudentDashboard";
 
+import Modules from "./pages/Modules";
+import Contact from "./pages/Contact";
 import Results from "./pages/Results";
 import AddStudent from "./pages/AddStudent";
 import Students from "./pages/Students";
@@ -205,7 +207,6 @@ function App() {
           }
         />
 
-
         {/* ADMIN - TEACHERS */}
 
         <Route
@@ -216,6 +217,9 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="/modules" element={<Modules />} />
+<Route path="/contact" element={<Contact />} />
 
         {/* ASSIGNMENTS */}
 

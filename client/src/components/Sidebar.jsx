@@ -147,14 +147,6 @@ function Sidebar() {
               <BookOpen size={19} />
               <span>Exams</span>
             </NavLink>
-
-            <NavLink
-              to="/reports"
-              className="sidebar-link"
-            >
-              <BarChart3 size={19} />
-              <span>Reports</span>
-            </NavLink>
           </>
         )}
 

@@ -37,7 +37,6 @@ function Navbar() {
 
       {/* BRAND */}
       <Link to="/" className="brand">
-
         <div className="brand-icon">
           <GraduationCap size={28} />
         </div>
@@ -49,9 +48,7 @@ function Navbar() {
 
           <small>Student Management System</small>
         </div>
-
       </Link>
-
 
       {/* NAVIGATION */}
       <div className="nav-links">
@@ -62,17 +59,36 @@ function Navbar() {
 
         {!isAuthenticated ? (
           <>
-            <a href="#features">Features</a>
-            <a href="#about">About</a>
-            <a href="#modules">Modules</a>
-            <a href="#contact">Contact</a>
+            {/* PUBLIC LANDING PAGE LINKS */}
+            <a href="#features">
+              Features
+            </a>
+
+            <a href="#about">
+              About
+            </a>
+
+            <Link to="/modules">
+              Modules
+            </Link>
+
+            <Link to="/contact">
+              Contact
+            </Link>
           </>
         ) : (
           <>
+            {/* LOGGED-IN USER LINKS */}
+
             {user?.role === "admin" && (
               <>
-                <Link to="/students">Students</Link>
-                <Link to="/add">Add Student</Link>
+                <Link to="/students">
+                  Students
+                </Link>
+
+                <Link to="/add">
+                  Add Student
+                </Link>
               </>
             )}
 
@@ -91,7 +107,6 @@ function Navbar() {
         )}
 
       </div>
-
 
       {/* ACTION BUTTONS */}
       <div className="nav-actions">
@@ -135,7 +150,6 @@ function Navbar() {
         )}
 
       </div>
-
     </nav>
   );
 }

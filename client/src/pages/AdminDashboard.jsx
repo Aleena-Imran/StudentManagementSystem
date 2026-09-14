@@ -269,28 +269,7 @@ const AdminDashboard = () => {
               />
             </div>
 
-            {/* VIEW REPORTS */}
-            <div
-              className="quick-action"
-              onClick={() => navigate("/reports")}
-            >
-              <div className="quick-action-icon">
-                <FileText size={22} />
-              </div>
-
-              <div className="quick-action-content">
-                <strong>View Reports</strong>
-
-                <span>
-                  Analyze academic data
-                </span>
-              </div>
-
-              <ArrowUpRight
-                size={18}
-                className="quick-action-arrow"
-              />
-            </div>
+            
 
           </div>
         </div>

@@ -11,7 +11,6 @@ import profileRoutes from "./routes/profileRoutes.js";
 import studentRoutes from "./routes/studentRoutes.js";
 import teacherRoutes from "./routes/teacherRoutes.js";
 import assignmentRoutes from "./routes/assignmentRoutes.js";
-
 dotenv.config();
 
 const app = express();
@@ -46,6 +45,7 @@ app.use("/api/students", studentRoutes);
 app.use("/api/teachers", teacherRoutes);
 
 app.use("/api/assignments", assignmentRoutes);
+
 
 // ==============================
 // Test Route
